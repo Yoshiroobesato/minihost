@@ -1,0 +1,39 @@
+<?php
+session_start();
+
+$liveFileCreated = isset($_SESSION['liveFileCreated']) && $_SESSION['liveFileCreated'];
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$liveFileCreated) {
+    $_SESSION['liveFileCreated'] = true;
+    header('Location: create_live.php');
+    exit();
+}
+?>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Inicio - MiniHost</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Bienvenido a MiniHost</h1>
+        <p>Use la plataforma para transmitir videos en vivo.</p>
+        
+        <?php if (!$liveFileCreated): ?>
+            <form action="create_live.php" method="post">
+                <button type="submit" class="btn btn-primary">Crear una Transmisión en Vivo</button>
+            </form>
+        <?php else: ?>
+            <p>Ya ha creado una transmisión en vivo. Para crear más, por favor <a href="register.php">cree una cuenta</a> o <a href="login.php">inicie sesión</a>.</p>
+        <?php endif; ?>
+        
+        <a href="panel.php" class="btn btn-secondary mt-3">Ir al Panel de Control</a>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
