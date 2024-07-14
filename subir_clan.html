@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Subir Clan</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 50%;
+    margin: 0 auto;
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 50px;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+}
+
+input[type="text"], input[type="url"], textarea, input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    box-sizing: border-box;
+}
+
+input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background: #5cb85c;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+input[type="submit"]:hover {
+    background: #4cae4c;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Subir Clan</h2>
+
+    <form id="clanForm" enctype="multipart/form-data">
+        <label for="nombre">Nombre del Clan:</label>
+        <input type="text" id="nombre" name="nombre" required>
+        
+        <label for="juego">Juego:</label>
+        <input type="text" id="juego" name="juego" required>
+        
+        <label for="enlace">Enlace:</label>
+        <input type="url" id="enlace" name="enlace" required>
+        
+        <label for="descripcion">Descripción:</label>
+        <textarea id="descripcion" name="descripcion" required></textarea>
+        
+        <label for="imagen">Imagen:</label>
+        <input type="file" id="imagen" name="imagen" accept="image/*" required>
+        
+        <input type="submit" value="Subir Clan">
+    </form>
+</div>
+
+<script>
+document.getElementById('clanForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const nombre = document.getElementById('nombre').value;
+    const juego = document.getElementById('juego').value;
+    const enlace = document.getElementById('enlace').value;
+    const descripcion = document.getElementById('descripcion').value;
+    const imagen = document.getElementById('imagen').files[0];
+
+    if (nombre && juego && enlace && descripcion && imagen) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const imgData = e.target.result;
+            const clan = {
+                nombre: nombre,
+                juego: juego,
+                enlace: enlace,
+                descripcion: descripcion,
+                imagen: imgData,
+                estrellas: 0,
+                visitas: 0
+            };
+
+            // Simulamos la lectura y escritura del JSON en localStorage
+            let clanes = JSON.parse(localStorage.getItem('clanes')) || [];
+            clanes.push(clan);
+            localStorage.setItem('clanes', JSON.stringify(clanes));
+
+            // Redirigir a una página de éxito o mostrar un mensaje
+            alert('Clan subido con éxito.');
+            document.getElementById('clanForm').reset();
+        };
+        reader.readAsDataURL(imagen);
+    } else {
+        alert('Por favor, completa todos los campos.');
+    }
+});
+</script>
+
+</body>
+</html>

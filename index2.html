@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clanes</title>
+<style>
+/* Estilos para la lista de clanes */
+.clan-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-gap: 20px;
+    list-style: none;
+    padding: 0;
+}
+
+.clan-card {
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.clan-card img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+.clan-card h3 {
+    margin: 0;
+    text-align: center;
+}
+
+.clan-card p {
+    margin-top: 5px;
+    font-size: 14px;
+    color: #666;
+}
+
+/* Estilos para la barra de búsqueda */
+.search-bar {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.search-bar input[type="text"] {
+    padding: 5px;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+}
+
+.search-bar button {
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.search-bar button:hover {
+    background-color: #0056b3;
+}
+
+/* Estilos para la opción de orden */
+.order-option {
+    margin-left: 20px;
+}
+
+.order-option select {
+    padding: 5px;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+}
+
+/* Estilos para la imagen de subir clan */
+.upload-image {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+}
+</style>
+</head>
+<body>
+
+<!-- Imagen para subir clan -->
+<a href="subir_clan.html"><img src="ruta/a/tu/imagen.jpg" alt="Subir Clan" class="upload-image"></a>
+
+<!-- Barra de búsqueda y opciones de orden -->
+<div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Buscar por juego, nombre de usuario o nombre de clan">
+    <button onclick="buscarClanes()">Buscar</button>
+    <div class="order-option">
+        <label for="orderSelect">Ordenar por:</label>
+        <select id="orderSelect" onchange="ordenarClanes()">
+            <option value="popularidad">Más populares</option>
+            <option value="recientes">Más recientes</option>
+        </select>
+    </div>
+</div>
+
+<!-- Contenedor de la lista de clanes -->
+<div class="container">
+    <h1>Clanes Destacados</h1>
+    <ul class="clan-list">
+        <!-- Aquí se mostrarán los clanes dinámicamente -->
+    </ul>
+</div>
+
+<script>
+// Datos de ejemplo de clanes
+var clanes = [];
+
+// Función para cargar los clanes desde el archivo JSON
+function cargarClanesDesdeJSON() {
+    fetch('clanes.json') // Obtener el archivo JSON
+    .then(response => response.json()) // Convertir la respuesta a JSON
+    .then(data => { 
+        clanes = data; // Asignar los clanes del archivo JSON a la variable clanes
+        mostrarClanes(clanes); // Mostrar los clanes en la página
+    })
+    .catch(error => console.error('Error al cargar los clanes:', error)); // Manejar errores
+}
+
+// Función para mostrar los clanes en la página
+function mostrarClanes(clanes) {
+    var clanList = document.querySelector('.clan-list');
+    clanList.innerHTML = '';
+    
+    clanes.forEach(function(clan) {
+        var listItem = document.createElement('li');
+        listItem.className = 'clan-card';
+        
+        var imagen = document.createElement('img');
+        imagen.src = clan.imagen;
+        imagen.alt = clan.nombre;
+        
+        var titulo = document.createElement('h3');
+        titulo.textContent = clan.nombre;
+        
+        var juego = document.createElement('p');
+        juego.textContent = "Juego: " + clan.juego;
+        
+        var descripcion = document.createElement('p');
+        descripcion.textContent = clan.descripcion;
+        
+        var enlace = document.createElement('a');
+        enlace.href = clan.enlace;
+        enlace.textContent = "Ver más";
+        
+        listItem.appendChild(imagen);
+        listItem.appendChild(titulo);
+        listItem.appendChild(juego);
+        listItem.appendChild(descripcion);
+        listItem.appendChild(enlace);
+        
+        clanList.appendChild(listItem);
+    });
+}
+
+// Función para buscar clanes por juego, nombre de usuario o nombre de clan
+function buscarClanes() {
+    var input = document.getElementById('searchInput').value.toLowerCase();
+    var resultados = clanes.filter(function(clan) {
+        return clan.juego.toLowerCase().includes(input) || 
+               clan.nombre.toLowerCase().includes(input) || 
+               clan.descripcion.toLowerCase().includes(input);
+    });
+    mostrarClanes(resultados);
+}
+
+// Función para ordenar los clanes por popularidad o recientes
+function ordenarClanes() {
+    var select = document.getElementById('orderSelect');
+    var orden = select.options[select.selectedIndex].value;
+
+    if (orden === 'popularidad') {
+        clanes.sort((a, b) => b.estrellas - a.estrellas); // Ordenar por estrellas de mayor a menor
+    } else if (orden === 'recientes') {
+        clanes.sort((a, b) => new Date(b.fecha) - new Date(a.fecha)); // Ordenar por fecha de más reciente a más antigua
+    }
+
+    mostrarClanes(clanes);
+}
+
+// Llamar a la función para cargar los clanes al cargar la página
+window.onload = function() {
+    cargarClanesDesdeJSON();
+};
+</script>
+
+</body>
+</html>
