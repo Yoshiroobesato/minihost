@@ -1,0 +1,12 @@
+{
+  "name": "api.api",
+  "version": "1.0.0",
+  "main": "api/download.js",
+  "scripts": {
+    "start": "node api/download.js"
+  },
+  "dependencies": {
+    "axios": "^1.3.0",  // Asegúrate de que axios esté listado aquí
+    "dotenv": "^10.0.0"  // Añade también dotenv si lo usas
+  }
+}
